@@ -306,6 +306,7 @@ rlc_op_status_t nr_rlc_data_req(const protocol_ctxt_t *const ctxt_pP,
   int ue_id = ctxt_pP->rntiMaybeUEid;
   nr_rlc_ue_t *ue;
   nr_rlc_entity_t *rb;
+  bool pass = true;
 
   LOG_D(RLC, "UE %d srb_flag %d rb_id %ld mui %d sdu_size %d\n", ue_id, srb_flagP, rb_idP, muiP, sdu_sizeP);
 
@@ -327,7 +328,20 @@ rlc_op_status_t nr_rlc_data_req(const protocol_ctxt_t *const ctxt_pP,
 
   if (rb != NULL) {
     rb->set_time(rb, get_nr_rlc_current_time());
-    rb->recv_sdu(rb, (char *)sdu_pP, sdu_sizeP, muiP);
+    
+    if (!srb_flagP && ctxt_pP->enb_flag)
+    {      
+      pass = rb->rlc_sdu_queue_disc.enqueue(rb->rlc_sdu_queue_disc.queue_disc_ctx, rb, (char *)sdu_pP, sdu_sizeP, muiP);
+    }
+
+    if (pass)
+    {
+      rb->recv_sdu(rb, (char *)sdu_pP, sdu_sizeP, muiP);
+    }
+    else 
+    {
+      LOG_E(RLC, "UE %d srb_flag %d rb_id %ld mui %d sdu_size %d DROPPED\n", ue_id, srb_flagP, rb_idP, muiP, sdu_sizeP);      
+    }
   } else {
     LOG_E(RLC, "%s:%d:%s: fatal: SDU sent to unknown RB\n", __FILE__, __LINE__, __FUNCTION__);
   }
@@ -835,6 +849,8 @@ static void add_drb_am(int ue_id, int drb_id, const NR_RLC_BearerConfig_t *rlc_B
                                                       t_reassembly, t_status_prohibit,
                                                       poll_pdu, poll_byte, max_retx_threshold,
                                                       sn_field_length);
+    
+    nr_rlc_initialize_sdu_queue_disc(nr_rlc_am, 1);
     nr_rlc_ue_add_drb_rlc_entity(ue, drb_id, nr_rlc_am);
 
     LOG_I(RLC, "Added drb %d to UE %d\n", drb_id, ue_id);

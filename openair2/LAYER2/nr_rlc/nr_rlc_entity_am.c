@@ -1828,7 +1828,16 @@ void nr_rlc_entity_am_recv_sdu(nr_rlc_entity_t *_entity,
     entity->t_log_buffer_full = entity->t_current;
   }
 
-  if (entity->tx_size + size > entity->tx_maxsize) {
+  //nr_rlc_statistics_t rlc = {0};
+  
+  //_entity->get_stats(_entity, &rlc);
+
+  //_entity->get_stats(_entity, &(_entity->stats));
+  //if (entity->common.stats.txsdu_wt_us > 100000) {
+  //  LOG_E(RLC, "%d SDU rejected, SDU TX ms > 100000\n", entity->common.stats.txsdu_wt_us);
+  //}
+
+  if (entity->tx_size + size > entity->tx_maxsize ) {
     entity->sdu_rejected++;
     entity->common.stats.txpdu_dd_pkts++;
     entity->common.stats.txpdu_dd_bytes += size;
@@ -1849,7 +1858,7 @@ void nr_rlc_entity_am_recv_sdu(nr_rlc_entity_t *_entity,
   entity->common.bstatus.tx_size += compute_pdu_header_size(entity, sdu)
                                     + sdu->size;
 
-  if (entity->common.avg_time_is_on)
+  //if (entity->common.avg_time_is_on)
     sdu->sdu->time_of_arrival = time_average_now();
 }
 

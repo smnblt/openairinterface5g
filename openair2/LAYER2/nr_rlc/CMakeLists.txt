@@ -7,7 +7,8 @@ add_library(nr_rlc_core OBJECT
             nr_rlc_entity_um.c
             nr_rlc_pdu.c
             nr_rlc_sdu.c
-            nr_rlc_rx_manager.c)
+            nr_rlc_rx_manager.c
+            nr_rlc_sdu_queue_disc.c)
 target_include_directories(nr_rlc_core PRIVATE ../../..)
 target_link_libraries(nr_rlc_core PRIVATE log_headers)
 add_library(nr_rlc STATIC
