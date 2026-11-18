@@ -850,7 +850,7 @@ static void add_drb_am(int ue_id, int drb_id, const NR_RLC_BearerConfig_t *rlc_B
                                                       poll_pdu, poll_byte, max_retx_threshold,
                                                       sn_field_length);
     
-    nr_rlc_initialize_sdu_queue_disc(nr_rlc_am, 1);
+    nr_rlc_initialize_sdu_queue_disc(nr_rlc_am, 2);
     nr_rlc_ue_add_drb_rlc_entity(ue, drb_id, nr_rlc_am);
 
     LOG_I(RLC, "Added drb %d to UE %d\n", drb_id, ue_id);
