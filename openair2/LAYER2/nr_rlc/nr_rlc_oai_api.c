@@ -329,6 +329,7 @@ rlc_op_status_t nr_rlc_data_req(const protocol_ctxt_t *const ctxt_pP,
   if (rb != NULL) {
     rb->set_time(rb, get_nr_rlc_current_time());
     
+    /* AQM enabled for drb data in downlink direction*/
     if (!srb_flagP && ctxt_pP->enb_flag)
     {      
       pass = rb->rlc_sdu_queue_disc.enqueue(rb->rlc_sdu_queue_disc.queue_disc_ctx, rb, (char *)sdu_pP, sdu_sizeP, muiP);
